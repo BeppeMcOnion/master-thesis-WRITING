@@ -1,0 +1,118 @@
+\documentclass[12pt]{report}
+\usepackage[english]{babel} 
+\usepackage{mathpazo}%[utf8]{inputenc}
+
+%%%PAGE DIMENSIONS
+%\usepackage{geometry} % to change the page dimensions
+%\geometry{a4paper} % or letterpaper (US) or a5paper or....
+%%%IN ALTO ALLA PAGINA...
+
+%%% PER FRONTESPIZIO, poi nel corpo della tesi cambiamo impaginazione...
+\usepackage{graphicx}
+\usepackage[a4paper]{geometry} % per modificare le dimensioni e i margini del documento	%NB:  DA  FRONTESPIZIO DA UNI
+\newgeometry{top=2cm, bottom=1.8cm, left=2cm, right=2cm} 						%NB:  PER FRONTESPIZIO DA UNI
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{images/}}
+%%%Bibliografia  ---->  \cite{...}, \parencite{...} o \textcite{...}
+\usepackage{biblatex}
+%\usepackage[backend=biber, style=authoryear, sorting=nyt]{biblatex} % sicché Stile Autore-Anno classico (es. Rossi 2020)
+\addbibresource{References_fromZotero.bib} % Nome del tuo file .bib con estensione
+\usepackage{hyperref}
+%%%
+
+\usepackage{lipsum}
+%%% MIE AGGIUNTE
+\usepackage{amsthm} % to have proof automatically
+\newtheorem{remark}{Nota}
+\newtheorem{theorem}{Proposizione}
+\newtheorem{definition}{Definizione}
+
+\usepackage{amsmath}  %  equazioni molto lunghe  e includere molte equazioni nella stessa linea
+\usepackage{amssymb}
+\usepackage{empheq}
+\usepackage{gensymb} % per usare "\degree" "\ohm" "\perthousand"
+\usepackage{siunitx } % notazione scientifica "\num{3.12e-2}"
+\usepackage{cancel}
+
+\usepackage{titlesec}
+
+% Rimuove la scritta "Capitolo" e mostra solo il numero seguito dal titolo
+\titleformat{\chapter}[hang]
+  {\normalfont\huge\bfseries}
+  {\thechapter\quad} % Mostra solo il numero (es. "1   Titolo")
+  {0pt}
+  {\Huge}
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+%\title{
+%		{\Huge Metodi matematici per la Fisica}\\ {\large (9 CFU)}\\
+%		{\large appunti dalle lezioni del prof F. Benatti} \\
+%		%{\includegraphics{university.jpg}}
+%}
+%\author{Giuseppe Cipolla}
+%\date{a.a. 2017-2018}
+
+\begin{document}
+%\maketitle
+\input{chapters/000-frontespizio-magistrale}
+
+% Inserisci \newgeometry subito dopo il frontespizio
+\newgeometry{
+    top=3cm, 
+    bottom=2.5cm, 
+    left=2.7cm,   % Margine sinistro più ampio per la rilegatura?
+    right=2.5cm
+}
+
+%%\lipsum
+%\chapter*{Dedication}
+%to mum and dad...
+% Pasquale, Miriam, Salvatore D'Angelo, prof Giugliano, prof Marsili, prof Brunel 
+
+%\chapter*{Declaration}
+%I declare that...
+%\chapter*{Acknowledgement}
+%I want to thank...
+
+\chapter*{Abstract \& Sommario}
+%\addcontentsline{toc}{chapter}{Abstract and Summary}
+
+\noindent\textbf{Abstract (English)} \\[0.5em]
+This thesis focuses on the study and analysis of... [testo in inglese della tua ricerca, obiettivi e metodologia].
+
+\vspace{1.5cm}
+
+\noindent\textbf{Sommario (Italiano)} \\[0.5em]
+Questo elaborato di tesi si concentra sullo studio e sull'analisi di... [stesso testo tradotto o riassunto in italiano].
+
+\tableofcontents
+
+\chapter{Introduction}
+\input{chapters/0-introduction}
+
+\chapter{Theory}
+Draft: intro to the model and to the DMFT, and Hopfield-like vrs of the model ?
+\input{chapters/1p1-the_model}
+\input{chapters/1p2-DMFT}
+
+
+\chapter{Numerical Simulations}
+\input{chapters/2p1-simulations}
+
+
+\chapter{Results}
+\input{chapters/3p1-results}
+
+
+\appendix
+%\chapter{Ito calculus}
+\input{chapters/A-DMFT_derivation}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+
+\end{document}
