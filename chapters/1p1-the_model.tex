@@ -3,3 +3,107 @@
 % !TEX root = ../A-thesis-main.tex
 
 \section{The Model}
+We consider rate model.... ecc ecc, focusing for computaional convenience on the dynamics of the field $h$
+
+\subsection{h-dynamics}
+\begin{equation} \label{model_eqq_hdyn}
+\begin{pmatrix} \tau_F\,\mathbb{1}_{N_F\times N_F} & \mathbb{O}_{N_F\times N_S} \\ \mathbb{O}_{N_S\times N_F} & \tau_S\,\mathbb{1}_{N_S\times N_S} \end{pmatrix} \cfrac{d}{dt}\begin{pmatrix}
+\vec{h}^F \\ \vec{h}^S \end{pmatrix} = -\begin{pmatrix}
+\vec{h}^F \\ \vec{h}^S \end{pmatrix}+\begin{pmatrix} J^{FF}_{N_{F}\times N_{F}} & J^{FS}_{N_{F}\times N_{S}} \\ J^{SF}_{N_{S}\times N_{F}} & J^{SS}_{N_{S}\times N_{S}}\end{pmatrix}\underbrace{\phi\begin{pmatrix}
+\vec{h}^F \\ \vec{h}^S \end{pmatrix}}_{\text{element-wise}}
+\end{equation}
+where 
+\begin{equation}
+\begin{aligned}
+J^{FF}_{ij}&:=\cfrac{A_{FF}}{K_{FF}}c_{ij}\sum_{s=1}^{\mathcal{S}}\limits\sum_{\mu=1}^{\mathcal{P}-1}\limits f(\xi^{s,\mu+1}_{i})g(\xi^{s,\mu}_{j}) && J^{FS}_{ik}:=\cfrac{A_{FS}}{K_{FS}}c_{ik}\sum_{s=1}^{\mathcal{S}}\limits\sum_{\mu=1}^P\limits f(\xi^{s,\mu}_{i})g(\eta^{s}_{k}) \\ J^{SF}_{ij}&:=\cfrac{A_{SF}}{K_{SF}}c_{ij}\sum_{s=1}^{\mathcal{S}}\limits\sum_{\mu=1}^{\mathcal{P}}\limits f(\eta^{s}_{i})g(\xi^{s,\mu}_{j}) && J^{SS}_{ik} :=\cfrac{A_{SS}}{K_{SS}}c_{ik}\sum_{s=1}^{\mathcal{S}}\limits f(\eta^{s}_{i})g(\eta^{s}_{k})
+\end{aligned}
+\end{equation}
+with:
+\begin{itemize}
+\item $\mathcal{S}=2$ (the number of temporal sequences), and $\mathcal{P}=16$ (the number of patterns for each temporal sequence);
+\item $K_{target,source}:=\mathbb{E}[N_{\textcolor{red}{source}}\,c_{ij}]$ , in red because in the code (\texttt{connectivity.py}, line 197: \texttt{self.K = p*target.size`)}\\
+	\textbf{Remark}: $N_{source}=N_{target}$ for the moment...(one problem at a time!) 
+\item $f$, and $g$, step functions as in Gillett 2020.
+\end{itemize}
+\subsection{A step behind: the Hopfield-like version of the model}
+In order to get an insight on the network behavior, we consider the following simplest version of our h-dynamics. A time-discrete dynamical system where each $h_i(t)$ is now $S_i(k)\in \{\pm 1\}$, stored pattern $\xi,\eta\in\{\pm 1\}$, and the time-evolution is given by the iterative map
+$ S_i(k+1)=\text{sgn}\big(\sum_{j\neq i}W_{ij}S_j(k)\big)$.  Thus, Eq \eqref{model_eqq_hdyn} for $A_{SF}=A_{FS}\equiv A$, $A_{FF},A_{SS}>0$, leads to
+the following update rule for the fast population states $S_{i_F}^F(t+1)$:
+\begin{equation}
+S_{i_F}^F(t+1) = \operatorname{sgn}\left( \sum_{j_F=1}^{N_F} W_{i_F j_F}^{FF} S_{j_F}^F(t) + \sum_{j_S=1}^{N_S} W_{i_F j_S}^{FS} S_{j_S}^S(t) \right)
+\end{equation}
+where the synaptic coupling matrices are defined as:
+\begin{align}
+W_{i_F j_F}^{FF} &= A_{FF} \frac{1}{N_F} \sum_{s=1}^{\mathcal{S}} \sum_{\mu=1}^{\mathcal{P}-1} \xi_{i_F}^{s,\mu+1} \xi_{j_F}^{s,\mu} &
+W_{i_F j_S}^{FS} &= A_{FS} \frac{1}{N_S} \sum_{s=1}^{\mathcal{S}} \sum_{\mu=1}^{\mathcal{P}} \xi_{i_F}^{s,\mu} \eta_{j_S}^{s}
+\end{align}
+Substituting the couplings into the update equation and rearranging the sums (towards the application of the Law of Large Numbers, LLN), we obtain:
+\begin{align}
+S_{i_F}^F(t+1) &= \operatorname{sgn}\left[ \frac{A_{FF}}{A} \sum_{j_F=1}^{N_F} \left( \frac{1}{N_F} \sum_{s=1}^{S} \sum_{\mu=1}^{P-1} \xi_{i_F}^{s,\mu+1} \xi_{j_F}^{s,\mu} \right) S_{j_F}^F(t) + \sum_{j_S=1}^{N_S} \left( \frac{1}{N_S} \sum_{s=1}^{S} \sum_{\mu=1}^{P} \xi_{i_F}^{s,\mu} \eta_{j_S}^{s} \right) S_{j_S}^S(t) \right] \nonumber \\
+&= \operatorname{sgn}\left[ \frac{A_{FF}}{A} \sum_{s=1}^{S} \sum_{\mu=1}^{P-1} \left( \frac{1}{N_F} \sum_{j_F=1}^{N_F} \xi_{j_F}^{s,\mu} S_{j_F}^F(t) \right) \xi_{i_F}^{s,\mu+1} + \sum_{s=1}^{S} \sum_{\mu=1}^{P} \left( \frac{1}{N_S} \sum_{j_S=1}^{N_S} \eta_{j_S}^{s} S_{j_S}^S(t) \right) \xi_{i_F}^{s,\mu} \right] \tag{$\star$}
+\end{align}
+
+\subsubsection*{Initial Conditions and First Step ($t=0 \to t=1$)}
+
+Now, suppose that the initial patterns of the two sequences coincide:
+\begin{equation}
+\vec{\xi}^{1,1} = \vec{\xi}^{2,1} \quad (\text{i.e. } \xi_k^{1,1} = \xi_k^{2,1}, \; \forall k=1,\dots,N_F)
+\end{equation}
+In addition, at $t=0$, we initialize the fast population (\textsc{fast pop}) and slow population as:
+\begin{equation}
+t=0: \quad
+\begin{cases}
+\vec{S}^F(0) = \vec{\xi}^{2,1} & (\text{or } \vec{\xi}^{1,1}, \text{ it's the same}) \\
+\vec{S}^S(0) = \vec{\eta}^{x}, \quad x \in \{1,2\} & (\text{index for the temporal sequence})
+\end{cases}
+\end{equation}
+
+Evaluating equation $(\star)$ at $t=0$:
+\begin{equation}
+(\star)\big|_{t=0}: \quad S_{i_F}^F(1) = \operatorname{sgn}\left[ \frac{A_{FF}}{A} \sum_{s=1}^{S} \sum_{\mu=1}^{P-1} \left( \frac{1}{N_F} \sum_{j_F=1}^{N_F} \xi_{j_F}^{s,\mu} \xi_{j_F}^{2,1} \right) \xi_{i_F}^{s,\mu+1} + \sum_{s=1}^{S} \sum_{\mu=1}^{P} \left( \frac{1}{N_S} \sum_{j_S=1}^{N_S} \eta_{j_S}^{s} \eta_{j_S}^{x} \right) \xi_{i_F}^{s,\mu} \right]
+\end{equation}
+
+In the thermodynamic limit ($N_F \to +\infty$, $N_S \to +\infty$), by the Law of Large Numbers (LLN):
+\begin{align}
+\frac{1}{N_F} \sum_{j_F=1}^{N_F} \xi_{j_F}^{s,\mu} \xi_{j_F}^{2,1} &\xrightarrow[N_F \to +\infty]{\text{LLN}} \mathbb{E}\left[\xi^{s,\mu}\xi^{2,1}\right] = \delta_{\mu,1} \quad (\text{for } s \in \{1,2\}, \text{ since } \vec{\xi}^{1,1} = \vec{\xi}^{2,1}) \\
+\frac{1}{N_S} \sum_{j_S=1}^{N_S} \eta_{j_S}^{s} \eta_{j_S}^{x} &\xrightarrow[N_S \to +\infty]{\text{LLN}} \mathbb{E}\left[\eta^{s}\eta^{x}\right] = \delta_{s,x}
+\end{align}
+
+Thus, for $S=2$ sequences and $x \in \{1,2\}$, we obtain:
+\begin{equation}
+S_{i_F}^F(1) \xrightarrow[N_F, N_S \to +\infty]{\text{LLN}} \operatorname{sgn}\left( \frac{A_{FF}}{A} \sum_{s=1}^{S} \xi_{i_F}^{s,2} + \sum_{\mu=1}^{P} \xi_{i_F}^{x,\mu} \right)
+\end{equation}
+\textit{Note on moments:} For $\xi \in \{-1, 1\}$ with $\operatorname{prob}(\xi = \pm 1) = 1/2$, we have $\mu = 0$ and $\sigma^2 = 1$, which implies $\operatorname{sgn}(\xi) = \xi$ (same distribution!).
+
+\subsubsection*{Regime Analysis}
+
+We analyze the behavior of $S_{i_F}^F(1)$ across three regimes of the ratio $\frac{A_{FF}}{A}$:
+
+\begin{enumerate}
+    \item $\dfrac{A_{FF}}{A} \gg 1$:
+    \begin{equation}
+    S_{i_F}^F(1) \approx \operatorname{sgn}\left( \sum_{s=1}^{S} \xi_{i_F}^{s,2} \right)
+    \end{equation}
+    \textbf{Random retrieval} of $\xi_{i_F}^{1,2}$ or $\xi_{i_F}^{2,2}$, i.e. slow population does not affect fast population which can do back and forth from one sequence to the other.
+
+    \item $\dfrac{A_{FF}}{A} \ll 1$:
+    \begin{equation}
+    S_{i_F}^F(1) \approx \operatorname{sgn}\left( \sum_{\mu=1}^{P} \xi_{i_F}^{x,\mu} \right)
+    \end{equation}
+    \textbf{Fully disambiguation} (guided by the slow population), \textbf{but loss of the temporal sequence}: equiprobability of each pattern of the selected temporal sequence.
+
+    \item $\dfrac{A_{FF}}{A} \simeq 1$:
+    \begin{align}
+    S_{i_F}^F(1) &\approx \operatorname{sgn}\left( \sum_{s=1}^{S} \xi_{i_F}^{s,2} + \sum_{\mu=1}^{P} \xi_{i_F}^{x,\mu} \right) \nonumber \\
+    &= \operatorname{sgn}\left( \xi_{i_F}^{1,2} + \xi_{i_F}^{2,2} + \xi_{i_F}^{x,1} + \xi_{i_F}^{x,2} + \sum_{\mu=3}^{P} \xi_{i_F}^{x,\mu} \right) \quad (\text{extracting the first two terms})
+    \end{align}
+    \textbf{Unifying Notation:} If $x=1$, then $\bar{x}=2$; if $x=2$, then $\bar{x}=1$ (wlog, let's suppose $x=2$). Rewriting the expression:
+    \begin{align}
+    S_{i_F}^F(1) &\approx \operatorname{sgn}\left( \xi_{i_F}^{\bar{x},2} + \xi_{i_F}^{x,2} + \xi_{i_F}^{x,1} + \xi_{i_F}^{x,2} + \sum_{\mu=3}^{P} \xi_{i_F}^{x,\mu} \right) \nonumber \\
+    &= \operatorname{sgn}\left( \xi_{i_F}^{\bar{x},2} + \mathbf{2}\,\xi_{i_F}^{x,2} + \xi_{i_F}^{x,1} + \sum_{\mu=3}^{P} \xi_{i_F}^{x,\mu} \right)
+    \end{align}
+    \textbf{The ``Broken Symmetry'':} $\xi_{i_F}^{x,2}$ is more likely; it will influence $S_{i_F}^F(1)$, \textbf{but} produces a very disturbed output (\textit{too disturbed $\implies$ very light disambiguation}).
+\end{enumerate}
+
+
+

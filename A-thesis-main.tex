@@ -1,4 +1,4 @@
-\documentclass[12pt]{report}
+\documentclass[11pt]{report}
 \usepackage[english]{babel} 
 \usepackage{mathpazo}%[utf8]{inputenc}
 
@@ -15,7 +15,7 @@
 
 \graphicspath{{images/}}
 %%%Bibliografia  ---->  \cite{...}, \parencite{...} o \textcite{...}
-\usepackage{biblatex}
+\usepackage[sorting=none]{biblatex}
 %\usepackage[backend=biber, style=authoryear, sorting=nyt]{biblatex} % sicché Stile Autore-Anno classico (es. Rossi 2020)
 \addbibresource{References_fromZotero.bib} % Nome del tuo file .bib con estensione
 \usepackage{hyperref}
@@ -24,9 +24,9 @@
 \usepackage{lipsum}
 %%% MIE AGGIUNTE
 \usepackage{amsthm} % to have proof automatically
-\newtheorem{remark}{Nota}
-\newtheorem{theorem}{Proposizione}
-\newtheorem{definition}{Definizione}
+\newtheorem{remark}{Remark}
+%\newtheorem{theorem}{Proposizione}
+%\newtheorem{definition}{Definizione}
 
 \usepackage{amsmath}  %  equazioni molto lunghe  e includere molte equazioni nella stessa linea
 \usepackage{amssymb}
@@ -34,6 +34,7 @@
 \usepackage{gensymb} % per usare "\degree" "\ohm" "\perthousand"
 \usepackage{siunitx } % notazione scientifica "\num{3.12e-2}"
 \usepackage{cancel}
+\usepackage{xcolor}
 
 \usepackage{titlesec}
 
@@ -82,12 +83,12 @@
 %\addcontentsline{toc}{chapter}{Abstract and Summary}
 
 \noindent\textbf{Abstract (English)} \\[0.5em]
-This thesis focuses on the study and analysis of... [testo in inglese della tua ricerca, obiettivi e metodologia].
+This thesis approaches the problem of temporal sequences disambiguation in the context of neural network -  specifically rate neuron models - within neural populations by integrating and generalizing two previosly enstablished connectivity frameworks: one leading to fixed attractor dynamics \cite{pereira2018}, whereas the other generates sequential activity \cite{gillett2020}, even with tunable retrieval speed \cite{gillett2024}. In order to characterize the disambiguation of two different temporal sequences starting from the same initial pattern of activity, we complement numerical simulations with the analytical derivation of the Dynamic Mean Field (DMF) equations for the system via a Path Integral formulation. This approach, indeed, allows to derive also the spectrum of fluctuations around the mean field equations, from which we derive the general stability condition for the DMF states. \cite{cris&somp2018, metz2025}.
 
 \vspace{1.5cm}
 
 \noindent\textbf{Sommario (Italiano)} \\[0.5em]
-Questo elaborato di tesi si concentra sullo studio e sull'analisi di... [stesso testo tradotto o riassunto in italiano].
+Questo elaborato di tesi si concentra sullo studio e sull'analisi di un modello di rete neurale che mette in relazione due modelli di reti neurali con connettività già studiata in letteratura, con l'obiettivo di studiare lo spazio dei parametri che permette di ottenere disambiguazione di sequence temporali. L'analisi quantitativa è basata sulla derivazioni delle equazioni di campo medio passando per il formalismo a path integral, che permette anche di ottenere lo spettro delle fluttuazioni rispetto alle equazioni di campo medio, da cui si derivano in generale le condizioni di generale stabilità degli stati di 
 
 \tableofcontents
 
