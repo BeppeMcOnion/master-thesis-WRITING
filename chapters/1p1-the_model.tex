@@ -25,7 +25,10 @@ with:
 	\textbf{Remark}: $N_{source}=N_{target}$ for the moment...(one problem at a time!) 
 \item $f$, and $g$, step functions as in Gillett 2020.
 \end{itemize}
-\subsection{A step behind: the Hopfield-like version of the model}
+\clearpage
+
+\section{Simplified models}
+\subsection{The Hopfield-like version of the model (FAILED)}
 In order to get an insight on the network behavior, we consider the following simplest version of our h-dynamics. A time-discrete dynamical system where each $h_i(t)$ is now $S_i(k)\in \{\pm 1\}$, stored pattern $\xi,\eta\in\{\pm 1\}$, and the time-evolution is given by the iterative map
 $ S_i(k+1)=\text{sgn}\big(\sum_{j\neq i}W_{ij}S_j(k)\big)$.  Thus, Eq \eqref{model_eqq_hdyn} for $A_{SF}=A_{FS}\equiv A$, $A_{FF},A_{SS}>0$, leads to
 the following update rule for the fast population states $S_{i_F}^F(t+1)$:
@@ -104,6 +107,10 @@ We analyze the behavior of $S_{i_F}^F(1)$ across three regimes of the ratio $\fr
     \end{align}
     \textbf{The ``Broken Symmetry'':} $\xi_{i_F}^{x,2}$ is more likely; it will influence $S_{i_F}^F(1)$, \textbf{but} produces a very disturbed output (\textit{too disturbed $\implies$ very light disambiguation}).
 \end{enumerate}
+
+\clearpage
+\subsection{The Tsodyks-Feigelman model in sparse activity regime (HOPE)}
+We prove that, in sparse activity regime, for a suitable choice for the threshold, one for the fast and one for the slo population, the Tsodyks-Feigelman version of our model allows disambiguation of temporal sequences in fast population as a consequence of the slow population routing.(!)
 
 
 
